@@ -10,4 +10,3 @@ public class HelloWorldController {
         return "Hello world!";
     }
 }
-g
