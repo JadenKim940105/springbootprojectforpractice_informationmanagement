@@ -1,49 +1,30 @@
 package com.jaden.springboot.bootprj.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
 @Entity
+@Getter
+@Setter
+@ToString
 public class Person {
     @Id
     @GeneratedValue
     private Long id;
-
     private String name;
-
     private int age;
+    private String hobby;
+    private String bloodType;
+    private String address;
+    private LocalDate birthDay;
+    private String job;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                '}';
-    }
+    @ToString.Exclude
+    private String phoneNumber;
 }

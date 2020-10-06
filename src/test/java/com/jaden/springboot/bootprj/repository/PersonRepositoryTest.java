@@ -19,15 +19,17 @@ class PersonRepositoryTest {
         Person person = new Person();
         person.setName("jaden");
         person.setAge(10);
+        person.setAddress("bundang");
 
         personRepository.save(person);
 
-        //System.out.println(personRepository.findAll());
+        System.out.println(personRepository.findAll());
         List<Person> people = personRepository.findAll();
 
         assertThat(people.stream().count()).isEqualTo(1);
         assertThat(people.stream().anyMatch(p -> p.getName().equals("jaden"))).isEqualTo(true);
         assertThat(people.stream().anyMatch(p -> p.getAge()==10)).isEqualTo(true);
+        assertThat(people.stream().anyMatch(p -> p.getAddress().equals("bundang"))).isEqualTo(true);
     }
 
 }
