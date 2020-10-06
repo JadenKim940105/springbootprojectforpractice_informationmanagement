@@ -25,9 +25,9 @@ class PersonRepositoryTest {
         //System.out.println(personRepository.findAll());
         List<Person> people = personRepository.findAll();
 
-        assertThat(people.size()).isEqualTo(1);
-        assertThat(people.get(0).getName()).isEqualTo("jaden");
-        assertThat(people.get(0).getAge()).isEqualTo(10);
+        assertThat(people.stream().count()).isEqualTo(1);
+        assertThat(people.stream().anyMatch(p -> p.getName().equals("jaden"))).isEqualTo(true);
+        assertThat(people.stream().anyMatch(p -> p.getAge()==10)).isEqualTo(true);
     }
 
 }
