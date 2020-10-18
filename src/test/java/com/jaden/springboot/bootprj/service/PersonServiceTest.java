@@ -7,7 +7,9 @@ import com.jaden.springboot.bootprj.repository.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,36 +26,115 @@ class PersonServiceTest {
     @Test
     void getPeopleExcludeBlocks(){
         givenPeople();
-        givenBlocks();
-
         List<Person> result = personService.getPeopleExcludeBlocks();
-
-        //System.out.println(result);
         result.forEach(System.out::println);
     }
 
-    private void givenBlocks() {
-        givenBlock("jaden");
+    @Test
+    void findByBloodType(){
+        givenPerson("jaden", 10, "B", LocalDate.of(1991,8,12));
+        givenPerson("david", 9, "B", LocalDate.of(1992,1,2));
+        givenPerson("dennis", 7, "O", LocalDate.of(1991,3,29));
+        List<Person> result = personRepository.findByBloodType("A");
+
+        result.forEach(System.out::println);
+
     }
 
-    private Block givenBlock(String name) {
-        return blockRepository.save(new Block(name));
+    @Test
+    void findByBirthDayBetween(){
+        givenPerson("jaden", 10, "B", LocalDate.of(1991,8,12));
+        givenPerson("david", 9, "B", LocalDate.of(1992,1,2));
+        givenPerson("dennis", 7, "O", LocalDate.of(1991,3,29));
+
+        List<Person> people = personRepository.findByBirthDayBetween
+                (LocalDate.of(1991,8,1), LocalDate.of(1991,8,31));
+
+        people.forEach(System.out::println);
+
+    }
+
+
+
+    @Test
+    void getPeopleByName(){
+        givenPeople();
+        List<Person> people = personService.getPeopleByName("jaden");
+        people.forEach(System.out::println);
+    }
+
+    @Test
+    void cascadeTest (){
+        givenPeople();
+
+        List<Person> result = personRepository.findAll();
+
+        result.forEach(System.out::println);
+
+        Person person = result.get(3);
+        person.getBlock().setStartDate(LocalDate.now());
+        person.getBlock().setEndDate(LocalDate.now());
+
+        personRepository.save(person);
+        personRepository.findAll().forEach(System.out::println);
+
+        /*personRepository.delete(person);
+        personRepository.findAll().forEach(System.out::println);
+        blockRepository.findAll().forEach(System.out::println);*/
+
+        person.setBlock(null);
+        personRepository.save(person);
+        personRepository.findAll().forEach(System.out::println);
+        blockRepository.findAll().forEach(System.out::println);
+
+
+    }
+
+    @Test
+    void casecadeTest(){
+        givenPeople();
+        List<Person> result =  personRepository.findAll();
+
+        result.forEach(System.out::println);
+
+        Person person = result.get(3);
+        person.getBlock().setStartDate(LocalDate.now());
+        person.getBlock().setEndDate(LocalDate.now());
+
+        personRepository.save(person);
+        personRepository.findAll().forEach(System.out::println);
+
+        personRepository.delete(person);
+        personRepository.findAll().forEach(System.out::println);
+        blockRepository.findAll().forEach(System.out::println);
+
     }
 
     private void givenBlockPerson(String name, int age, String bloodType){
         Person blockPerson = new Person(name, age, bloodType);
-        blockPerson.setBlock(givenBlock(name));
+        blockPerson.setBlock(new Block(name));
         personRepository.save(blockPerson);
     }
 
-    private void givenPeople() {
-        givenPerson("jaden", 10, "B");
-        givenPerson("david", 9, "B");
-        givenPerson("dennis", 7, "O");
-        givenBlockPerson("jaden", 11, "AB");
+
+    @Test
+    void getPerson(){
+        givenPeople();
+        Person person = personService.getPerson(4L);
+
+        System.out.println(person);
     }
 
-    private void givenPerson(String name, int age, String bloodType) {
-        personRepository.save(new Person(name, age, bloodType));
+
+    private void givenPeople() {
+        givenPerson("jaden", 10, "B", LocalDate.of(1991,8,12));
+        givenPerson("david", 9, "B", LocalDate.of(1992,1,2));
+        givenPerson("dennis", 7, "O", LocalDate.of(1991,3,29));
+    }
+
+    private void givenPerson(String name, int age, String bloodType, LocalDate birthDay) {
+        Person person = new Person(name, age, bloodType);
+        person.setBirthDay(birthDay);
+        personRepository.save(person);
     }
 }
