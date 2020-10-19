@@ -2,6 +2,8 @@ package com.jaden.springboot.bootprj.repository;
 
 import com.jaden.springboot.bootprj.domain.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -12,6 +14,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     List<Person> findByName(String name);
     List<Person> findByBlockIsNull();
     List<Person> findByBloodType(String bloodType);
-    List<Person> findByBirthDayBetween(LocalDate startDate, LocalDate endDate);
 
+
+    @Query(value = "select person from Person person where person.birthDay.monthOfBirthday = :monthOfBirthday")
+    List<Person> findByMonthOfBirthDay(@Param("monthOfBirthday") int monthOfBirthday);
 }

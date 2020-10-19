@@ -1,8 +1,12 @@
 package com.jaden.springboot.bootprj.domain;
 
+import com.jaden.springboot.bootprj.domain.dto.BirthDay;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 
 @Entity
@@ -12,17 +16,32 @@ import java.time.LocalDate;
 @Data
 public class Person {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NonNull
+    @NotEmpty
+    @Column(nullable = false)
     private String name;
+
     @NonNull
+    @Min(1)
+    @Column(nullable = false)
     private int age;
+
     private String hobby;
+
     @NonNull
+    @NotEmpty
+    @Column(nullable = false)
     private String bloodType;
+    
     private String address;
-    private LocalDate birthDay;
+
+    @Valid
+    @Embedded
+    private BirthDay birthDay;
+
     private String job;
     @ToString.Exclude
     private String phoneNumber;
