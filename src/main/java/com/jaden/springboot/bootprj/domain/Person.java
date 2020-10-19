@@ -4,12 +4,10 @@ import com.jaden.springboot.bootprj.controller.dto.PersonDto;
 import com.jaden.springboot.bootprj.domain.dto.BirthDay;
 import lombok.*;
 import org.springframework.util.StringUtils;
-
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor

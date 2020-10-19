@@ -1,7 +1,6 @@
 package com.jaden.springboot.bootprj.service;
 
 import com.jaden.springboot.bootprj.domain.Person;
-import com.jaden.springboot.bootprj.repository.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
