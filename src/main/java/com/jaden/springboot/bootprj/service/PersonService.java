@@ -1,5 +1,6 @@
 package com.jaden.springboot.bootprj.service;
 
+import com.jaden.springboot.bootprj.common.Common;
 import com.jaden.springboot.bootprj.controller.dto.PersonDto;
 import com.jaden.springboot.bootprj.domain.Person;
 import com.jaden.springboot.bootprj.repository.PersonRepository;
@@ -15,6 +16,9 @@ import java.util.List;
 public class PersonService {
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private Common common;
 
     //차단된 사람을 제외한 모든 사람을 불러오는 메소드
     public List<Person> getPeopleExcludeBlocks(){
@@ -48,7 +52,7 @@ public class PersonService {
 
     @Transactional
     public void modify(Long id, PersonDto personDto) {
-        Person person = personRepository.findById(id).orElseThrow(() -> new RuntimeException("아이디가 존재하지 않습니다."));
+        Person person = personRepository.findById(id).orElseThrow(() -> common.noIdException());
 
         if(!person.getName().equals(personDto.getName())){
              throw new RuntimeException("이름이 다릅니다.");
@@ -61,10 +65,18 @@ public class PersonService {
 
     @Transactional
     public void modify(Long id, String name){
-        Person person = personRepository.findById(id).orElseThrow(() -> new RuntimeException("아이디가 존재하지 않습니다"));
+        Person person = personRepository.findById(id).orElseThrow(() -> common.noIdException());
 
         person.setName(name);
 
+        personRepository.save(person);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        //personRepository.deleteById(id);   -> 데이터를 날려벌면 복구할 방법이 없음으로 flag 를 바꾼느 형식을 사용한다.
+        Person person = personRepository.findById(id).orElseThrow(() -> common.noIdException());
+        person.setDeleted(true);
         personRepository.save(person);
     }
 }

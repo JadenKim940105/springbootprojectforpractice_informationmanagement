@@ -3,6 +3,8 @@ package com.jaden.springboot.bootprj.domain;
 import com.jaden.springboot.bootprj.controller.dto.PersonDto;
 import com.jaden.springboot.bootprj.domain.dto.BirthDay;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Where;
 import org.springframework.util.StringUtils;
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -14,6 +16,7 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data
+@Where(clause = "deleted = false")   // Person 과 관련된 query 가 날라갈때 기본적으로 deleted = false 인것으로..
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,8 +49,13 @@ public class Person {
     @ToString.Exclude
     private String phoneNumber;
 
+    @ColumnDefault("0")
+    private Boolean deleted;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Block block;
+
+
 
     public void set(PersonDto personDto){
         if( personDto.getAge() != 0){
@@ -69,4 +77,5 @@ public class Person {
             this.setPhoneNumber(personDto.getPhoneNumber());
         }
     }
+
 }
