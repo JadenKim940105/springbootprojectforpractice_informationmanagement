@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.time.LocalDate;
 
 
 @Embeddable // entity 에 속해있는 DTO 임을 알려줌
@@ -24,4 +25,9 @@ public class BirthDay {
     @Max(31)
     private Integer dayOfBirthday;
 
+    public BirthDay(LocalDate birthday) {
+        this.yearOfBirthday = birthday.getYear();
+        this.monthOfBirthday = birthday.getMonthValue();
+        this.dayOfBirthday = birthday.getDayOfMonth();
+    }
 }

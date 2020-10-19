@@ -1,7 +1,9 @@
 package com.jaden.springboot.bootprj.domain;
 
+import com.jaden.springboot.bootprj.controller.dto.PersonDto;
 import com.jaden.springboot.bootprj.domain.dto.BirthDay;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -49,19 +51,24 @@ public class Person {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Block block;
 
-
-
-
-    /*public boolean equals(Object object){
-        if(object == null)
-            return false;
-
-        Person person = (Person) object;
-
-        if(!person.getName().equals(this.getName()))
-            return false;
-        if(person.getAge() != this.getAge())
-            return false;
-        else return true;
-    }*/
+    public void set(PersonDto personDto){
+        if( personDto.getAge() != 0){
+            this.setAge(personDto.getAge());
+        }
+        if (!StringUtils.isEmpty(personDto.getHobby())){
+            this.setHobby(personDto.getHobby());
+        }
+        if (!StringUtils.isEmpty(personDto.getBloodType())) {
+            this.setBloodType(personDto.getBloodType());
+        }
+        if(!StringUtils.isEmpty(personDto.getAddress())){
+            this.setAddress(personDto.getAddress());
+        }
+        if(!StringUtils.isEmpty(personDto.getJob())){
+            this.setJob(personDto.getJob());
+        }
+        if(!StringUtils.isEmpty(personDto.getPhoneNumber())){
+            this.setPhoneNumber(personDto.getPhoneNumber());
+        }
+    }
 }

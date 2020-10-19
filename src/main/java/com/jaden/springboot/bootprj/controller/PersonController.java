@@ -1,5 +1,6 @@
 package com.jaden.springboot.bootprj.controller;
 
+import com.jaden.springboot.bootprj.controller.dto.PersonDto;
 import com.jaden.springboot.bootprj.domain.Person;
 import com.jaden.springboot.bootprj.repository.PersonRepository;
 import com.jaden.springboot.bootprj.service.PersonService;
@@ -27,6 +28,19 @@ public class PersonController {
     @ResponseStatus(HttpStatus.CREATED)
     public void postPerson(@RequestBody Person person){
         personService.put(person);
+        log.info("person -> {} ", personRepository.findAll());
+    }
+
+    @PutMapping("/{id}")
+    public void modifyPerson(@PathVariable Long id, @RequestBody PersonDto personDto){
+        personService.modify(id, personDto);
+
+        log.info("person -> {} ", personRepository.findAll());
+    }
+
+    @PatchMapping("/{id}")
+    public void modifyPerson(@PathVariable Long id, String name){
+        personService.modify(id, name);
         log.info("person -> {} ", personRepository.findAll());
     }
 }
