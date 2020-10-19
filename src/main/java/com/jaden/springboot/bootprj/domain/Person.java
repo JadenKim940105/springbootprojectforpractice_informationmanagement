@@ -1,7 +1,7 @@
 package com.jaden.springboot.bootprj.domain;
 
 import com.jaden.springboot.bootprj.controller.dto.PersonDto;
-import com.jaden.springboot.bootprj.domain.dto.BirthDay;
+import com.jaden.springboot.bootprj.domain.dto.Birthday;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
@@ -27,10 +28,9 @@ public class Person {
     @Column(nullable = false)
     private String name;
 
-    @NonNull
-    @Min(1)
-    @Column(nullable = false)
-    private int age;
+    @Valid
+    @Embedded
+    private Birthday birthDay;
 
     private String hobby;
 
@@ -38,12 +38,9 @@ public class Person {
     @NotEmpty
     @Column(nullable = false)
     private String bloodType;
-    
+
     private String address;
 
-    @Valid
-    @Embedded
-    private BirthDay birthDay;
 
     private String job;
     @ToString.Exclude
@@ -56,11 +53,18 @@ public class Person {
     private Block block;
 
 
+    public Integer getAge(){
+        if(this.birthDay != null){
+            return LocalDate.now().getYear() - this.birthDay.getYearOfBirthday() + 1;
+        }
+        return null;
+    }
+
+    public boolean isBirthdayToday(){
+        return LocalDate.now().equals(LocalDate.of(this.birthDay.getYearOfBirthday(), this.birthDay.getMonthOfBirthday(), this.birthDay.getDayOfBirthday()));
+    }
 
     public void set(PersonDto personDto){
-        if( personDto.getAge() != 0){
-            this.setAge(personDto.getAge());
-        }
         if (!StringUtils.isEmpty(personDto.getHobby())){
             this.setHobby(personDto.getHobby());
         }
