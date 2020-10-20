@@ -10,9 +10,6 @@ import java.util.List;
 @Repository //jpaRepository 를 extends 하면 자동으로 repository bean으로 등록됨
 public interface PersonRepository extends JpaRepository<Person, Long> {
     List<Person> findByName(String name);
-    List<Person> findByBlockIsNull();
-    List<Person> findByBloodType(String bloodType);
-
 
     @Query(value = "select person from Person person where person.birthDay.monthOfBirthday = :monthOfBirthday")
     List<Person> findByMonthOfBirthDay(@Param("monthOfBirthday") int monthOfBirthday);

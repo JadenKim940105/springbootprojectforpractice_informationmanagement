@@ -20,14 +20,6 @@ public class PersonService {
     @Autowired
     private Common common;
 
-    //차단된 사람을 제외한 모든 사람을 불러오는 메소드
-    public List<Person> getPeopleExcludeBlocks(){
-        /*List<Person> people = personRepository.findAll();
-        return people.stream().filter(person -> person.getBlock()==null).collect(Collectors.toList());*/
-        return personRepository.findByBlockIsNull();
-    }
-
-
 
     @Transactional(readOnly = true )
     public Person getPerson(Long id){
