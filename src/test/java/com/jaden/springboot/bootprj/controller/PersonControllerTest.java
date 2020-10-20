@@ -12,18 +12,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.cbor.MappingJackson2CborHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.NestedServletException;
-
 import java.time.LocalDate;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -32,19 +33,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PersonControllerTest {
 
     @Autowired
-    PersonController personController;
+    private PersonController personController;
 
     @Autowired
-    PersonRepository personRepository;
+    private PersonRepository personRepository;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private MappingJackson2HttpMessageConverter massageConvert;
 
     private MockMvc mockMvc;
 
     @BeforeEach
     void beforeEach(){
-        mockMvc = MockMvcBuilders.standaloneSetup(personController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(personController).setMessageConverters(massageConvert).build();
     }
 
     @Test
@@ -52,7 +56,17 @@ class PersonControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/person/1"))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name").value("martin"))
+                .andExpect(jsonPath("hobby").isEmpty())
+                .andExpect(jsonPath("address").isEmpty())
+                .andExpect(jsonPath("job").isEmpty())
+                .andExpect(jsonPath("phoneNumber").isEmpty())
+                .andExpect(jsonPath("deleted").value(false))
+                .andExpect(jsonPath("age").isNumber())
+                .andExpect(jsonPath("birthdayToday").isBoolean())
+                .andExpect(jsonPath("$.birthDay").value("1991-08-15"))
+                ;
     }
 
     @Test
@@ -105,8 +119,6 @@ class PersonControllerTest {
                         .andDo(print())
                         .andExpect(status().isOk())
         );
-
-
     }
 
     @Test
@@ -132,6 +144,4 @@ class PersonControllerTest {
     private String toJsonString(PersonDto dto) throws JsonProcessingException {
         return objectMapper.writeValueAsString(dto);
     }
-
-
 }
